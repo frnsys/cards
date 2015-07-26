@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 class Card():
@@ -7,17 +7,19 @@ class Card():
             setattr(self, k, v)
 
     def __repr__(self):
-        return '<{name} ({cost}) [{typ}]>'.format(name=self.name,
-                                                  cost=self.cost,
-                                                  typ=self.type)
+        return '<{name} ({rarity!s}) ({cost}) [{typ}]>'.format(name=self.name,
+                                                               rarity=self.rarity,
+                                                               cost=self.cost,
+                                                               typ=self.type)
 
 
 class Unit(Card):
     def __repr__(self):
-        return '<{name} ({cost}) [ATK:{atk}|DEF:{dfn}]>'.format(name=self.name,
-                                                                cost=self.cost,
-                                                                atk=self.attack,
-                                                                dfn=self.defense)
+        return '<{name} ({rarity!s}) ({cost}) [ATK:{atk}|DEF:{dfn}]>'.format(name=self.name,
+                                                                             rarity=self.rarity,
+                                                                             cost=self.cost,
+                                                                             atk=self.attack,
+                                                                             dfn=self.defense)
 
 class Action(Card):
     pass
@@ -38,3 +40,7 @@ class CardType(Enum):
     condition = Condition
     event = Event
 
+class Rarity(IntEnum):
+    common = 0
+    uncommon = 1
+    rare = 2

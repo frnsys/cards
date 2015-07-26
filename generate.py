@@ -1,7 +1,7 @@
 import json
 import random
 import numpy as np
-from card import CardType
+from card import CardType, Rarity
 from urllib import request, parse
 
 
@@ -85,7 +85,7 @@ def rarity():
     r = np.random.multinomial(1, [0.8, 0.18, 0.02])
 
     # 0=C,1=U,2=R
-    return np.where(r)[0][0]
+    return Rarity(np.where(r)[0][0])
 
 
 def card_points(rarity):
