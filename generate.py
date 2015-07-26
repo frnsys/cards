@@ -126,6 +126,6 @@ def stats(pts):
     """
     Unit stats
     """
-    atk = random.randint(0, pts)
+    atk = random.randint(0, pts - 1)
     dfn = pts - atk
     return atk, dfn
