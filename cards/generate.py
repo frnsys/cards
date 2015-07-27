@@ -93,11 +93,11 @@ def rarity():
 
 def card_points(rarity):
     """
-    Max points is 10
+    Max points is 10, min is 1
     Probability for a point is 0.8 weighted by the rarity
     """
     w = (rarity+1)/3
-    return np.random.binomial(10, 0.8 * w)
+    return np.random.binomial(10, 0.8 * w) + 1
 
 
 def base_cost(rarity):
