@@ -9,7 +9,7 @@
     <figure style="background-image:url('{{ card.image }}')"></figure>
     <section>
         <span class="type">{{ card.type.name.capitalize() }}</span>
-        <span class="rarity">{{ card.rarity }}</span>
+        <span class="rarity">{{ card.rarity.name.capitalize() }}</span>
     </section>
     <section>
         {% for ability in card.abilities %}
