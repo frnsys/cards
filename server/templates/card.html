@@ -12,7 +12,9 @@
         <span class="rarity">{{ card.rarity }}</span>
     </section>
     <section>
-        (abilities/effects)
+        {% for ability in card.abilities %}
+            <li>{{ ability }}</li>
+        {% endfor %}
     </section>
     <section>
         {% if card.type.name == 'unit' %}

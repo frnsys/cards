@@ -1,8 +1,9 @@
 import json
 import random
 import numpy as np
-from cards.card import CardType
 from urllib import request, parse
+from cards.card import CardType
+from cards.abilities import AbilityCost, abilities
 
 
 def load_lexicon(fname):
@@ -35,21 +36,22 @@ def generate_card():
     nam = name(typ)
     img = image(nam)
 
-    abs, pts = abilities(pts)
-    efs, pts = effects(pts)
-
     attrs = {
         'name': nam,
         'image': img,
         'type': typ,
         'rarity': rar,
         'cost': cst,
-        'abilities': abilities,
-        'effects': effects,
     }
 
     if typ == CardType.unit:
         attrs['attack'], attrs['defense'] = stats(pts)
+
+    abs, pts = gen_abilities(pts)
+    efs, pts = effects(pts)
+
+    attrs['abilities'] = abs
+    attrs['effects'] = efs
 
     card = typ.value(**attrs)
     return card
@@ -100,7 +102,7 @@ def card_points(rarity):
 
 def base_cost(rarity):
     l, u = 2 - rarity, 4 - rarity
-    return np.random.randint(l, u)
+    return random.randint(l, u)
 
 
 def card_type():
@@ -109,11 +111,48 @@ def card_type():
     return list(CardType)[i]
 
 
-def abilities(pts):
+def gen_abilities(pts):
     """
     Abilities have a cost to play
     """
-    return [], pts
+    # Candidate abilities
+    choices = [a for a in abilities if a.point_cost <= pts]
+    if not choices:
+        return [], pts
+
+    # Choose an ability, account for the cost
+    abl = random.choice(choices)
+    pts -= abl.point_cost
+
+    # Choose effect points
+    fx_pts = abl.point_cost
+    ex_pts = random.randint(0, pts)
+    fx_pts += ex_pts
+    pts -= ex_pts
+
+    # Choose cost
+    res_cost = fx_pts
+    spc_cost = random.randint(0, 3)
+    if spc_cost == 1:
+        res_cost -= 1
+        cost = AbilityCost(res_cost, tap=True)
+    elif spc_cost == 2:
+        life_cost = random.randint(1, res_cost - 1)
+        res_cost -= life_cost
+        cost = AbilityCost(res_cost, life=life_cost)
+    elif spc_cost == 3 and res_cost >= 2:
+        sac_cost = random.randint(1, res_cost//2)
+        res_cost -= sac_cost*2
+        cost = AbilityCost(res_cost, sacrifice=sac_cost)
+    else:
+        cost = AbilityCost(res_cost)
+
+    # Choose target
+    target = random.choice(abl.valid_targets)
+
+    # For now just creating one ability
+    ability = abl(fx_pts, cost, target)
+    return [ability], pts
 
 
 def effects(pts):

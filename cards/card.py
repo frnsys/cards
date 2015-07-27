@@ -37,4 +37,3 @@ class CardType(Enum):
     property = Property
     condition = Condition
     event = Event
-
