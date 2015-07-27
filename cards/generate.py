@@ -1,7 +1,7 @@
 import json
 import random
 import numpy as np
-from card import CardType
+from cards.card import CardType
 from urllib import request, parse
 
 
@@ -9,7 +9,8 @@ def load_lexicon(fname):
     with open('data/{}'.format(fname), 'r') as f:
         return [l.strip() for l in f.readlines()]
 
-image_url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q='
+# https://developers.google.com/image-search/v1/jsondevguide?hl=en
+image_url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&safe=active&q='
 adjectives = load_lexicon('adjectives.txt')
 animals = load_lexicon('animals.txt')
 adjs = load_lexicon('wn_adjs.txt')
