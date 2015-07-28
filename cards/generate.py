@@ -18,6 +18,7 @@ adjs = load_lexicon('wn_adjs.txt')
 advs = load_lexicon('wn_advs.txt')
 nouns = load_lexicon('wn_nouns.txt')
 verbs = load_lexicon('wn_verbs.txt')
+quotes = json.load(open('data/quotes.json', 'r'))
 
 card_type_probs = [
     0.5,    # unit
@@ -35,6 +36,7 @@ def generate_card():
     cst = base_cost(rar)
     nam = name(typ)
     img = image(nam)
+    qot = random.choice(quotes)
 
     attrs = {
         'name': nam,
@@ -42,6 +44,7 @@ def generate_card():
         'type': typ,
         'rarity': rar,
         'cost': cst,
+        'quote': qot
     }
 
     if typ == CardType.unit:

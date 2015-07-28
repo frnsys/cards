@@ -11,10 +11,13 @@
         <span class="type">{{ card.type.name.capitalize() }}</span>
         <span class="rarity">{{ card.rarity.name.capitalize() }}</span>
     </section>
-    <section>
+    <section class="card-main">
         {% for ability in card.abilities %}
             <li>{{ ability }}</li>
         {% endfor %}
+        <div class="quote">
+            <em>{{ card.quote['body']|safe }}</em> - {{ card.quote['attr'] }}
+        </div>
     </section>
     <section>
         {% if card.type.name == 'unit' %}
