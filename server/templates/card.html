@@ -16,7 +16,11 @@
             <li>{{ ability }}</li>
         {% endfor %}
         <div class="quote">
-            <em>{{ card.quote['body']|safe }}</em> - {{ card.quote['attr'] }}
+            {% if card.quote['attr'] %}
+                <em>{{ card.quote['body']|safe }}</em> - {{ card.quote['attr'] }}
+            {% else %}
+                <em>{{ card.quote['body']|safe }}</em>
+            {% endif %}
         </div>
     </section>
     <section>

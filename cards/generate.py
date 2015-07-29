@@ -18,7 +18,12 @@ adjs = load_lexicon('wn_adjs.txt')
 advs = load_lexicon('wn_advs.txt')
 nouns = load_lexicon('wn_nouns.txt')
 verbs = load_lexicon('wn_verbs.txt')
+
+# A few diff quote sources
 quotes = json.load(open('data/quotes.json', 'r'))
+jokes = [{'body': q, 'attr': ''} for q in json.load(open('data/jokes.json', 'r')) if len(q) <= 250]
+pickups = [{'body': q, 'attr': ''} for q in sum(json.load(open('data/pickuplines.json', 'r')).values(), [])]
+philo = sum(json.load(open('data/philo_quotes.json', 'r')).values(), [])
 
 card_type_probs = [
     0.5,    # unit
@@ -36,7 +41,7 @@ def generate_card():
     cst = base_cost(rar)
     nam = name(typ)
     img = image(nam)
-    qot = random.choice(quotes)
+    qot = quote()
 
     attrs = {
         'name': nam,
@@ -84,6 +89,11 @@ def image(name):
     resp = request.urlopen(req)
     body = resp.read()
     return json.loads(body.decode('utf-8'))['responseData']['results'][0]['url']
+
+
+def quote():
+    source = random.choice([quotes, philo, jokes, pickups])
+    return random.choice(source)
 
 
 def rarity():
