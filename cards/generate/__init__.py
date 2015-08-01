@@ -2,28 +2,16 @@ import json
 import random
 import numpy as np
 from cards.card import CardType, Rarity
-from urllib import request, parse
 from cards.abilities import AbilityCost, abilities
+from cards.generate.name import name
+from cards.generate.image import image
 
-
-def load_lexicon(fname):
-    with open('data/{}'.format(fname), 'r') as f:
-        return [l.strip() for l in f.readlines()]
-
-# https://developers.google.com/image-search/v1/jsondevguide?hl=en
-image_url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&safe=active&q='
-adjectives = load_lexicon('adjectives.txt')
-animals = load_lexicon('animals.txt')
-adjs = load_lexicon('wn_adjs.txt')
-advs = load_lexicon('wn_advs.txt')
-nouns = load_lexicon('wn_nouns.txt')
-verbs = load_lexicon('wn_verbs.txt')
 
 # A few diff quote sources
-quotes = json.load(open('data/quotes.json', 'r'))
-jokes = [{'body': q, 'attr': ''} for q in json.load(open('data/jokes.json', 'r')) if len(q) <= 250]
-pickups = [{'body': q, 'attr': ''} for q in sum(json.load(open('data/pickuplines.json', 'r')).values(), [])]
-philo = sum(json.load(open('data/philo_quotes.json', 'r')).values(), [])
+quotes = json.load(open('data/quotes/quotes.json', 'r'))
+jokes = [{'body': q, 'attr': ''} for q in json.load(open('data/quotes/jokes.json', 'r')) if len(q) <= 250]
+pickups = [{'body': q, 'attr': ''} for q in sum(json.load(open('data/quotes/pickuplines.json', 'r')).values(), [])]
+philo = sum(json.load(open('data/quotes/philo_quotes.json', 'r')).values(), [])
 
 card_type_probs = [
     0.5,    # unit
@@ -63,32 +51,6 @@ def generate_card():
 
     card = typ.value(**attrs)
     return card
-
-
-def name(card_type):
-    if card_type == CardType.unit:
-        prefix = adjectives
-        suffix = animals
-    elif card_type in [CardType.action, CardType.event]:
-        prefix = advs
-        suffix = verbs
-    elif card_type in [CardType.property, CardType.condition]:
-        prefix = adjs
-        suffix = nouns
-
-    names = [random.choice(prefix),
-            random.choice(prefix),
-            random.choice(suffix).lower()]
-    return ' '.join(names).title()
-
-
-def image(name):
-    q = parse.quote(name)
-    url = image_url + q
-    req = request.Request(url, headers={'User-Agent': 'Chrome'})
-    resp = request.urlopen(req)
-    body = resp.read()
-    return json.loads(body.decode('utf-8'))['responseData']['results'][0]['url']
 
 
 def quote():
