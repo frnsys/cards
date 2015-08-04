@@ -1,7 +1,9 @@
+from cards.abilities.prelude import *
+from cards.abilities import *
+from cards.generate.ability import *
 from cards.generate import generate_card
-
-for i in range(10):
-    c = generate_card()
-    print('\n')
-    print(c)
-    print(c.image)
+print(TriggeredAbility.dies)
+print(TargetType.triggered_ability() | TargetType.unit() | TargetType.player())
+print(DamageAbility(DamageAbility.variants()[0]))
+card = generate_card()
+print(ability(card))

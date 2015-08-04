@@ -1,4 +1,4 @@
-from card import *
+from cards.card import *
 from enum import IntEnum, Enum
 
 
@@ -123,16 +123,8 @@ class TriggeredAbility(AbilityType, Enum):
 # 
 class AbilityTarget():
   def __init__(self, opponent, optional):
-    self._opponent = opponent
-    self._optional = optional
-
-  @property
-  def can_target_opponent(self): 
-    return self._opponent
-
-  @property
-  def can_be_optional(self): 
-    return self.optional 
+    self.can_target_opponent = opponent
+    self.can_be_optional = optional
 
 class SingleTarget(AbilityTarget):
   pass
@@ -144,28 +136,49 @@ class OwnerTarget(AbilityTarget):
 class GlobalTarget(AbilityTarget):
   pass
 
+ 
+# Flags indicating if a card can be on a certain card type
+#
+class AbilityCardTarget(int):
+  @staticmethod
+  def unit():
+    return AbilityCardTarget(1)
+
+  @staticmethod
+  def event():
+    return AbilityCardTarget(2)
+
+  @staticmethod
+  def condition():
+    return AbilityCardTarget(4)
+
+  @staticmethod
+  def property():
+    return AbilityCardTarget(8)
+
+  @staticmethod
+  def action():
+    return AbilityCardTarget(16)
+
+  @staticmethod
+  def spell():
+    return AbilityCardTarget.action() | AbilityCardTarget.event()
+
+  @staticmethod
+  def permanent():
+    return AbilityCardTarget.unit() | AbilityCardTarget.property() | AbilityCardTarget.condition()
+
+  @staticmethod
+  def all():
+    return AbilityCardTarget.spell() | AbilityCardTarget.permanent()
+
 
 # Properties of a variation of an ability.
 #
 class AbilityVariant():
-  def __init__(self, ability_type, target_type, valid_targets, duplicate_flag):
-    self._ability_type = ability_type
-    self._target_type = target_type
-    self._valid_targets = valid_targets
-    self._duplicate_flag = duplicate_flag
-
-  @property 
-  def ability_type(self):
-    return self._ability_type
-
-  @property 
-  def valid_targets(self):
-    return self._valid_targets
-
-  @property 
-  def target_type(self):
-    return self._target_type
-
-  @property 
-  def duplicate_flag(self):
-    return self._duplicate_flag
+  def __init__(self, ability_type, target_type, valid_targets, allowed_on, duplicate_flag):
+    self.ability_type = ability_type
+    self.target_type = target_type
+    self.valid_targets = valid_targets
+    self.duplicate_flag = duplicate_flag
+    self.allowed_on = allowed_on

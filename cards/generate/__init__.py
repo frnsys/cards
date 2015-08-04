@@ -2,7 +2,6 @@ import json
 import random
 import numpy as np
 from cards.card import CardType, Rarity
-from cards.abilities import AbilityCost, abilities
 from cards.generate.name import name
 from cards.generate.image import image
 
@@ -43,10 +42,8 @@ def generate_card():
     if typ == CardType.unit:
         attrs['attack'], attrs['defense'] = stats(pts)
 
-    abs, pts = gen_abilities(pts)
     efs, pts = effects(pts)
 
-    attrs['abilities'] = abs
     attrs['effects'] = efs
 
     card = typ.value(**attrs)
@@ -84,50 +81,6 @@ def card_type():
     r = np.random.multinomial(1, card_type_probs)
     i = np.where(r)[0][0]
     return list(CardType)[i]
-
-
-def gen_abilities(pts):
-    """
-    Abilities have a cost to play
-    """
-    # Candidate abilities
-    choices = [a for a in abilities if a.point_cost <= pts]
-    if not choices:
-        return [], pts
-
-    # Choose an ability, account for the cost
-    abl = random.choice(choices)
-    pts -= abl.point_cost
-
-    # Choose effect points
-    fx_pts = abl.point_cost
-    ex_pts = random.randint(0, pts)
-    fx_pts += ex_pts
-    pts -= ex_pts
-
-    # Choose cost
-    res_cost = fx_pts
-    spc_cost = random.randint(0, 3)
-    if spc_cost == 1:
-        res_cost -= 1
-        cost = AbilityCost(res_cost, tap=True)
-    elif spc_cost == 2:
-        life_cost = random.randint(1, res_cost - 1)
-        res_cost -= life_cost
-        cost = AbilityCost(res_cost, life=life_cost)
-    elif spc_cost == 3 and res_cost >= 2:
-        sac_cost = random.randint(1, res_cost//2)
-        res_cost -= sac_cost*2
-        cost = AbilityCost(res_cost, sacrifice=sac_cost)
-    else:
-        cost = AbilityCost(res_cost)
-
-    # Choose target
-    target = random.choice(abl.valid_targets)
-
-    # For now just creating one ability
-    ability = abl(fx_pts, cost, target)
-    return [ability], pts
 
 
 def effects(pts):

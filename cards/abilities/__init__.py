@@ -1,1 +1,1 @@
-from abilities.damage import DamageAbility
+from cards.abilities.damage import DamageAbility
