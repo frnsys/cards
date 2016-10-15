@@ -2,13 +2,13 @@ import io
 import json
 import base64
 import random
+import config
 from PIL import Image
 from urllib import request, parse, error
 from collections import namedtuple
 
-# https://developers.google.com/image-search/v1/jsondevguide?hl=en
-image_url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&safe=active&q='
-
+# https://pixabay.com/api/docs/
+image_url = 'https://pixabay.com/api/?key={}&q='.format(config.PIXABAY_API_KEY)
 
 def image(name):
     # First try the entire name as the query
@@ -34,16 +34,17 @@ def image(name):
 
 
 def fetch_image(name):
-    q = parse.quote(name)
+    q = parse.quote(name.replace(' ', '+'))
+    q = name.replace(' ', '+')
     url = image_url + q
     req = request.Request(url, headers={'User-Agent': 'Chrome'})
     resp = request.urlopen(req)
     body = resp.read()
-    results = json.loads(body.decode('utf-8'))['responseData']['results']
+    results = json.loads(body.decode('utf-8'))['hits']
 
     # Try results until we get an available image
     while results:
-        url = results.pop()['url']
+        url = results.pop()['webformatURL']
         req = request.Request(url, headers={'User-Agent': 'Chrome'})
         try:
             resp = request.urlopen(req)
