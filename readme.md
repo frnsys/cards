@@ -20,14 +20,6 @@ this uses the pixabay image API which is a great free service but has a much mor
 
 ---
 
-example cards:
+# Examples
 
-![](examples/01.png)
-
-![](examples/02.png)
-
-![](examples/03.png)
-
-![](examples/04.png)
-
-![](examples/05.png)
+![](examples.png)
