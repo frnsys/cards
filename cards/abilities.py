@@ -22,13 +22,13 @@ class AbilityCost():
         self.sacrifice = sacrifice
 
     def __repr__(self):
-        repr = '{}'.format(self.resources)
+        repr = '[{}]'.format(self.resources)
         if self.tap:
-            repr += ', T'
+            repr += ', [T]'
         if self.life:
             repr += ', pay {} life'.format(self.life)
         if self.sacrifice:
-            repr += ', sacrifice {} {}'.format(self.sacrifice,
+            repr += ', sacrifice {} {}'.format('a' if self.sacrifice == 1 else self.sacrifice,
                                                'units' if self.sacrifice > 1
                                                        else 'unit')
         return repr + ': '
@@ -46,20 +46,56 @@ class DamageAbility(Ability):
             target=self.target.name
         )
 
+class BounceAbility(Ability):
+    point_cost = 2
+    valid_targets = [AbilityTarget.everyone,
+                     AbilityTarget.target,
+                     AbilityTarget.opponent]
+
+    def __repr__(self):
+        return '{cost}Return {prefix}{target}{poss} unit{plural} to {pron} owner\'s hand{plural}.'.format(
+            cost=self.cost,
+            effect=self.effect,
+            prefix='target ' if self.target in [AbilityTarget.opponent] else '',
+            target=self.target.name,
+            pron='its' if self.target in [AbilityTarget.target, AbilityTarget.opponent] else 'their',
+            poss='\'s' if self.target in [AbilityTarget.everyone, AbilityTarget.opponent] else '',
+            plural='s' if self.target in [AbilityTarget.everyone] else '',
+        )
+
+
 class LifeAbility(Ability):
     point_cost = 2
     valid_targets = [AbilityTarget.everyone,
                      AbilityTarget.you]
 
     def __repr__(self):
-        return '{cost}{target} gains {effect} life.'.format(
+        return '{cost}{target} {verb} {effect} life.'.format(
             cost=self.cost,
+            verb='gain' if self.target == AbilityTarget.you else 'gains',
             effect=self.effect,
             target=self.target.name.capitalize()
         )
 
+class DestroyAbility(Ability):
+    point_cost = 2
+    valid_targets = [AbilityTarget.everyone,
+                     AbilityTarget.target,
+                     AbilityTarget.opponent]
+
+    def __repr__(self):
+        return '{cost}Destroy {prefix}{target}{poss} unit{plural}.'.format(
+            cost=self.cost,
+            effect=self.effect,
+            prefix='target ' if self.target in [AbilityTarget.opponent] else '',
+            target=self.target.name,
+            poss='\'s' if self.target in [AbilityTarget.everyone, AbilityTarget.opponent] else '',
+            plural='s' if self.target in [AbilityTarget.everyone] else '',
+        )
 
 abilities = [
     DamageAbility,
-    LifeAbility
+    LifeAbility,
+    BounceAbility,
+    DestroyAbility
 ]

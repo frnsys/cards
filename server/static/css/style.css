@@ -1,46 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quattrocento:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Volkhov:wght@700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
 html, body {
-    background: #fecbf6;
-    font-family: 'Calibre', sans-serif;
-    font-size: 1.1em;
+    background: #eee;
+    font-family: 'Quattrocento', sans-serif;
+    font-size: 1em;
+    text-align: justify;
 }
 
 .card {
-    padding: 1em;
-    max-width: 400px;
+    width: 280px;
+    font-size: 0.75em;
     margin: 2em auto;
-    background: #fff;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-    border-radius: 0.4em;
+    border-radius: 0.5em;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+    padding: 0.75em;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    display: inline-block;
+    vertical-align: top;
+    height: 340px;
+}
+
+.card-title {
+  border-radius: 0.25em 0.25em 0 0;
+  font-weight: bold;
 }
 
 .card figure {
     width: 100%;
-    height: 240px;
+    height: 160px;
     margin: 0;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    border: 1px solid #eaeaea;
+}
+
+.card-content {
+  border: 3px solid rgba(0,0,0,0.2);
+  border-radius: 0.25em;
+}
+.card-meta {
+  margin: 1px 0;
+}
+.card-stats {
+  border-width: 3px;
+  font-weight: bold;
+}
+
+.card-image {
+    border-top: none;
+    border-bottom: none;
 }
 
 .card .card-main {
     padding: 1.5em;
-    border: 1px solid #D8D8D8;
+    background: #fff6f3;
+    border-radius: 0 0 0.25em 0.25em;
+    border-top: none;
 }
 .card .card-main li {
     list-style-type: none;
     margin: 0;
 }
 
-.card .quote {
+.card .card-meta,
+.card .card-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em 0.5em !important;
+}
+.card-meta {
+  font-size: 0.8em;
+}
+
+
+.card--blue .card-meta,
+.card--blue .card-title,
+.card--blue .card-stats {
+  background: #e7f1f3;
+}
+.card--red .card-meta,
+.card--red .card-title,
+.card--red .card-stats {
+  background: #fce0dc;
+}
+.card--white .card-meta,
+.card--white .card-title,
+.card--white .card-stats {
+  background: #f3f3e7;
+}
+.card--green .card-meta,
+.card--green .card-title,
+.card--green .card-stats {
+  background: #e7f3ec;
+}
+.card--black .card-meta,
+.card--black .card-title,
+.card--black .card-stats {
+  background: #f3e7f3;
+}
+.card--colorless .card-meta,
+.card--colorless .card-title,
+.card--colorless .card-stats {
+  background: #e9e6e9;
+}
+
+
+.card-stats {
+  background: lightblue;
+  position: absolute;
+  bottom: 0.75em;
+  right: 0.75em;
+  padding: 0.2em 0.5em 0.1em;
+  border-radius: 0.2em;
+  box-shadow: -1px -1px 2px rgba(0,0,0,0.75);
+}
+
+.card .card-quote {
     padding: 1em 0;
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: #A7A7A7;
+    font-family: 'Libre Baskerville', sans-serif;
 }
 
 .card section {
     padding: 0.5em 0;
 }
-.card section span:last-child {
-    float: right;
+
+.symbol {
+  height: 11px;
+}
+.cost-symbol {
+  background: #CBC2BF;
+  border-radius: 10em;
+  vertical-align: text-top;
+  line-height: 1.5;
+  font-weight: bold;
+  font-family: 'Volkhov';
+  padding: 0em 0.4em 0;
+  font-size: 0.75em;
+  border: 1px solid #888;
 }

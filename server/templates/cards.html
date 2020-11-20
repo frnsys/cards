@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+{% for card in cards %}
+    <div class="card card--{{ card.color }}" style="background-image:url(/assets/backgrounds/{{ card.color }}.jpg);">
+        <div class="card-content">
+            <section class="card-title">
+                <span>{{ card.name }}</span>
+                <span class="cost">{{ card.cost|safe }}</span>
+            </section>
+            <div class="card-image">
+                <figure style="background-image:url('{{ card.image }}')"></figure>
+            </div>
+            <section class="card-meta">
+                <span class="type">{{ card.type.capitalize() }}</span>
+                <span class="rarity">{{ card.rarity.capitalize() }}</span>
+            </section>
+            <section class="card-main">
+                {% for ability in card.abilities %}
+                    <li>{{ ability|safe }}</li>
+                {% endfor %}
+                <div class="card-quote">
+                    {% if card.quote['attr'] %}
+                        <em>{{ card.quote['body']|safe }}</em> - {{ card.quote['attr'] }}
+                    {% else %}
+                        <em>{{ card.quote['body']|safe }}</em>
+                    {% endif %}
+                </div>
+            </section>
+            {% if card.type == 'unit' %}
+                <span class="card-stats">{{ card.attack }}/{{ card.defense }}</span>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}
+
+
+{% block script %}
+<script type="text/javascript">
+    $(function() {
+    });
+</script>
+{% endblock %}

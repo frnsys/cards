@@ -21,6 +21,8 @@ card_type_probs = [
     0.125,  # event
 ]
 
+# TODO link colors to different ability probabilities
+colors = ['blue', 'black', 'red', 'white', 'green', 'colorless']
 
 def generate_card():
     typ = card_type()
@@ -36,7 +38,8 @@ def generate_card():
         'image': img,
         'type': typ,
         'rarity': rar,
-        'cost': cst,
+        'color': random.choice(colors),
+        'cost': '[{}]'.format(cst),
         'quote': qot
     }
 
@@ -55,7 +58,11 @@ def generate_card():
 
 def quote():
     source = random.choice([quotes, philo, jokes, pickups])
-    return random.choice(source)
+    quote = random.choice(source)
+    while len(quote) > 120:
+        source = random.choice([quotes, philo, jokes, pickups])
+        quote = random.choice(source)
+    return quote
 
 
 def rarity():

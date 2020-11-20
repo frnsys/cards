@@ -1,9 +1,12 @@
 import io
+import cv2
 import json
 import base64
 import random
 import config
-from PIL import Image
+import unidecode
+import numpy as np
+from PIL import Image, ImageFilter
 from urllib import request, parse, error
 from collections import namedtuple
 
@@ -14,7 +17,7 @@ def image(name):
     # First try the entire name as the query
     url = fetch_image(name)
     if url is not None:
-        return url
+        return process_image(url)
 
     # Otherwise, blend an image from separate queries
     else:
@@ -25,7 +28,7 @@ def image(name):
             return '#'
 
         elif len(parts) == 1:
-            return parts[0]
+            return process_image(parts[0])
 
         else:
             parts = random.sample(parts, 2)
@@ -33,7 +36,23 @@ def image(name):
             return 'data:image/jpeg;base64,{}'.format(data)
 
 
+def process_image(url):
+    req = request.Request(url, headers={'User-Agent': 'Chrome'})
+    resp = request.urlopen(req)
+    data = io.BytesIO(resp.read())
+    img = Image.open(data)
+    cimg = find_contours(img)
+    img = Image.composite(img, cimg, cimg.convert('L'))
+
+    buff = io.BytesIO()
+    img.convert('RGB').save(buff, format='jpeg')
+    data = base64.b64encode(buff.getvalue()).decode('utf8')
+
+    return 'data:image/jpeg;base64,{}'.format(data)
+
+
 def fetch_image(name):
+    name = unidecode.unidecode(name)
     q = parse.quote(name.replace(' ', '+'))
     q = name.replace(' ', '+')
     url = image_url + q
@@ -95,7 +114,25 @@ def blend_images(url1, url2):
         img = img.crop((l,u,r,d))
         cimages.append(img)
 
-    fimg = Image.blend(cimages[0], cimages[1], 0.5)
+    try:
+        fimg = Image.blend(cimages[0], cimages[1], 0.5)
+    except ValueError:
+        fimg = cimages[0]
+
+    cimg = find_contours(fimg)
+    img = Image.composite(fimg, cimg, cimg.convert('L'))
+
     buff = io.BytesIO()
-    fimg.save(buff, format='jpeg')
-    return base64.b64encode(buff.getvalue())
+    img.convert('RGB').save(buff, format='jpeg')
+    return base64.b64encode(buff.getvalue()).decode('utf8')
+
+def find_contours(img):
+    img = img.convert('RGB')
+    cimg = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    gray = cv2.cvtColor(cimg, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray, 20, 30) # lower threshold, dirtier
+    # edges = cv2.Canny(gray, 50, 120) # higher threshold, cleaner
+    # edges = cv2.Canny(gray, 60, 120) # higher threshold, cleaner
+    edges = cv2.cvtColor(edges, cv2.COLOR_BGR2RGB)
+    return Image.fromarray(edges)
+
